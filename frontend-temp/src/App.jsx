@@ -1,6 +1,8 @@
+
 import { useState, useRef, useEffect } from 'react'
 import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision'
 import './App.css'
+import Community from './components/Community'
 
 function App() {
   const [recognizedText, setRecognizedText] = useState('')
@@ -23,7 +25,7 @@ function App() {
   const lastRequestTimeRef = useRef(0)
   const isRequestingRef = useRef(false)
 
-  const navigation = ['Home', 'Translator', 'About']
+  const navigation = ['Home', 'Community', 'Translator', 'About']
 
   // Initialize MediaPipe.
   async function initializeHandLandmarker() {
@@ -567,6 +569,11 @@ function App() {
 
         </main>
 
+      )}
+
+      {/* Community Page */}
+      {activePage === 'Community' && (
+        <Community />
       )}
 
       {/* Translator Page */}
