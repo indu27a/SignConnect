@@ -3,12 +3,22 @@ import { useState, useRef, useEffect } from 'react'
 import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision'
 import './App.css'
 import Community from './components/Community'
+import AuthenticatedLayout from './components/layout/AuthenticatedLayout'
+import Feed from './components/Feed'
+import Profile from './components/profile/Profile'
 
 function App() {
   const [recognizedText, setRecognizedText] = useState('')
   const [activePage, setActivePage] = useState('Home')
   const [speechStatus, setSpeechStatus] = useState('')
+const [isAuthenticated, setIsAuthenticated] = useState(
+  Boolean(localStorage.getItem('signconnect_access'))
+)
 
+const [userProfile, setUserProfile] = useState({
+  username: localStorage.getItem('signconnect_username') || '',
+  email: localStorage.getItem('signconnect_email') || '',
+})
   const [cameraActive, setCameraActive] = useState(false)
   const [cameraStatus, setCameraStatus] = useState('Camera is stopped')
   const [prediction, setPrediction] = useState('--')
@@ -26,6 +36,42 @@ function App() {
   const isRequestingRef = useRef(false)
 
   const navigation = ['Home', 'Community', 'Translator', 'About']
+  // Handle successful community login.
+function handleLoginSuccess(data) {
+  setUserProfile({
+    username: data.username,
+    email: data.email,
+    first_name: data.first_name || '',
+    last_name: data.last_name || '',
+  })
+
+  setIsAuthenticated(true)
+  setActivePage('Home')
+}
+
+// Handle logout.
+function handleLogout() {
+  localStorage.removeItem('signconnect_access')
+  localStorage.removeItem('signconnect_refresh')
+  localStorage.removeItem('signconnect_username')
+  localStorage.removeItem('signconnect_email')
+
+  setUserProfile({
+    username: '',
+    email: '',
+  })
+
+  setIsAuthenticated(false)
+  setActivePage('Community')
+}
+
+// Synchronize updated profile information across the dashboard.
+function handleProfileUpdate(data) {
+  setUserProfile((previous) => ({
+    ...previous,
+    ...data,
+  }))
+}
 
   // Initialize MediaPipe.
   async function initializeHandLandmarker() {
@@ -380,10 +426,18 @@ function App() {
   }, [])
 
   return (
-    <div className="app">
+    <AuthenticatedLayout
+      isAuthenticated={isAuthenticated}
+      activePage={activePage}
+      onNavigate={openPage}
+      userProfile={userProfile}
+      onLogout={handleLogout}
+    >
 
-      {/* Navigation */}
-      <header className="navbar">
+      {/* Public navigation is shown only before login. */}
+      {!isAuthenticated && (
+        <>
+          <header className="navbar">
 
         <a
           className="brand"
@@ -427,154 +481,146 @@ function App() {
           Start Translating →
         </button>
 
-      </header>
+          </header>
+        </>
+      )}
 
       {/* Home Page */}
       {activePage === 'Home' && (
-
-        <main>
-
-          <section className="hero">
-
-            <div className="hero-content">
-
-              <div className="eyebrow">
-                <span className="status-dot" />
-                AI-POWERED COMMUNICATION
-              </div>
-
+  isAuthenticated ? (
+    <Feed />
+  ) : (
+        <main className="new-home">
+          <section className="home-hero">
+            <div className="home-hero-content">
+              <span className="home-badge">
+                ✦ AN ACCESSIBLE WORLD. A CONNECTED COMMUNITY.
+              </span>
               <h1>
-                Every gesture
+                Your world.
                 <br />
-                tells a <span>story.</span>
+                Your people.
+                <br />
+                <span>Your way to connect.</span>
               </h1>
-
-              <p className="hero-description">
-                Bridging communication gaps through intelligent sign
-                recognition. Turn hand gestures into meaningful text
-                and make communication more accessible.
+              <p>
+                A space where everyone belongs. Share your stories,
+                connect with people and communicate beyond words
+                through the power of AI and sign language.
               </p>
-
-              <div className="hero-actions">
-
+              <div className="home-hero-actions">
                 <button
                   type="button"
-                  className="primary-button"
+                  className="home-primary-button"
+                  onClick={() => openPage('Community')}
+                >
+                  Join the Community →
+                </button>
+                <button
+                  type="button"
+                  className="home-secondary-button"
                   onClick={() => openPage('Translator')}
                 >
-                  Try the Translator →
+                  Explore AI Translator
                 </button>
-
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={() => openPage('About')}
-                >
-                  Explore the Project
-                </button>
-
               </div>
-
-              <div className="hero-note">
-                <span>✦</span>
-                Built with React, Django and AI
+              <div className="home-trust-note">
+                ✦ Designed for inclusive communication
               </div>
-
             </div>
 
-            <div className="hero-visual">
-
-              <div className="visual-orbit orbit-one" />
-              <div className="visual-orbit orbit-two" />
-
-              <div className="visual-card">
-
-                <div className="visual-card-header">
-                  <span>LIVE RECOGNITION</span>
-                  <span className="preview-badge">AI MODEL</span>
+            <div className="home-hero-visual">
+              <div className="home-visual-card">
+                <div className="home-visual-top">
+                  <span>WELCOME TO SIGNCONNECT</span>
+                  <span className="home-online-dot">●</span>
                 </div>
-
-                <div className="hand-illustration">✋</div>
-
-                <div className="recognition-label">
-                  Supported gestures
+                <div className="home-visual-symbol">🤝</div>
+                <h2>Different voices.</h2>
+                <h2 className="home-blue-text">One community.</h2>
+                <p>
+                  Connect through gestures, words and meaningful
+                  conversations.
+                </p>
+                <div className="home-visual-tags">
+                  <span>✋ Sign</span>
+                  <span>♡ Connect</span>
+                  <span>✦ Share</span>
                 </div>
-
-                <div className="recognition-result">
-                  A · B · C
-                </div>
-
-                <div className="visual-divider" />
-
-                <div className="visual-footer">
-                  <span>AI Sign Recognition</span>
-                  <span className="footer-indicator" />
-                </div>
-
               </div>
-
-              <div className="floating-chip chip-top">
-                <span>✦</span> Intelligent Recognition
+              <div className="home-floating-card">
+                <span>✦</span> Everyone belongs here
               </div>
-
-              <div className="floating-chip chip-bottom">
-                <span>✓</span> Accessible Communication
-              </div>
-
             </div>
-
           </section>
 
-          <section className="features">
-
-            <div className="section-heading">
-              <span className="section-kicker">WHAT WE OFFER</span>
-              <h2>Communication without barriers.</h2>
+          <section className="home-features">
+            <div className="home-section-heading">
+              <span>DISCOVER SIGNCONNECT</span>
+              <h2>More than a social platform.</h2>
               <p>
-                Designed to make sign recognition simple and accessible.
+                Everything you need to connect, express and communicate
+                without barriers.
               </p>
             </div>
-
-            <div className="feature-grid">
-
-              <article className="feature-card">
-                <div className="feature-icon">✋</div>
-                <h3>AI Recognition</h3>
+            <div className="home-feature-grid">
+              <article className="home-feature-card">
+                <div className="home-feature-icon">♡</div>
+                <h3>Share Your World</h3>
                 <p>
-                  Recognize supported hand gestures using a trained
-                  machine-learning model.
+                  Share photos, thoughts and experiences with
+                  an inclusive community.
                 </p>
               </article>
-
-              <article className="feature-card">
-                <div className="feature-icon">Aa</div>
-                <h3>Text Conversion</h3>
+              <article className="home-feature-card">
+                <div className="home-feature-icon">✉</div>
+                <h3>Meaningful Conversations</h3>
                 <p>
-                  View recognized letters and build text from supported signs.
+                  Connect with people through accessible
+                  private messaging.
                 </p>
               </article>
-
-              <article className="feature-card">
-                <div className="feature-icon">♫</div>
-                <h3>Voice Output</h3>
+              <article className="home-feature-card">
+                <div className="home-feature-icon">✋</div>
+                <h3>AI Sign Translation</h3>
                 <p>
-                  Listen to entered or recognized text using browser
-                  text-to-speech.
+                  Explore AI-powered sign recognition and
+                  accessible communication.
                 </p>
+                <button
+                  type="button"
+                  onClick={() => openPage('Translator')}
+                >
+                  Try Translator →
+                </button>
               </article>
-
             </div>
-
           </section>
 
-        </main>
-
-      )}
+          <section className="home-bottom-cta">
+            <h2>Communication belongs to everyone.</h2>
+            <p>
+              Be part of a community where every expression matters.
+            </p>
+            <button
+              type="button"
+              onClick={() => openPage('Community')}
+            >
+              Get Started →
+            </button>
+          </section>
+</main>
+    )
+  )}
 
       {/* Community Page */}
       {activePage === 'Community' && (
-        <Community />
+        <Community onLoginSuccess={handleLoginSuccess} />
       )}
+           {/* Profile Page */}
+{activePage === 'Profile' && isAuthenticated && (
+  <Profile onProfileUpdate={handleProfileUpdate} />
+)}
 
       {/* Translator Page */}
       {activePage === 'Translator' && (
@@ -825,8 +871,9 @@ function App() {
 
       )}
 
-      {/* Footer */}
-      <footer className="footer">
+      {/* Public footer is shown only before login. */}
+      {!isAuthenticated && (
+        <footer className="footer">
 
         <div className="footer-brand">
           Sign<span>Connect</span>
@@ -840,9 +887,9 @@ function App() {
           AI Sign Language Translator · 2026
         </span>
 
-      </footer>
-
-    </div>
+        </footer>
+      )}
+    </AuthenticatedLayout>
   )
 }
 

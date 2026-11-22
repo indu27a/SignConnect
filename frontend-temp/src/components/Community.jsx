@@ -3,7 +3,7 @@ import './Community.css'
 
 const API_URL = 'http://127.0.0.1:8000/api'
 
-function Community() {
+function Community({ onLoginSuccess }) {
   const [isRegister, setIsRegister] = useState(false)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
@@ -78,8 +78,9 @@ function Community() {
         localStorage.setItem('signconnect_email', data.email)
 
         setMessage(`Welcome to SignConnect, ${data.username}!`)
-      }
 
+        onLoginSuccess?.(data)
+      }
     } catch (error) {
       setMessage(error.message)
     } finally {
@@ -89,11 +90,8 @@ function Community() {
 
   return (
     <main className="community-auth">
-
       <section className="auth-card">
-
         <div className="auth-heading">
-
           <div className="auth-icon">✋</div>
 
           <h1>
@@ -103,11 +101,9 @@ function Community() {
           <p>
             A community where everyone can communicate.
           </p>
-
         </div>
 
         <div className="auth-tabs">
-
           <button
             type="button"
             className={!isRegister ? 'auth-tab selected' : 'auth-tab'}
@@ -129,11 +125,9 @@ function Community() {
           >
             Register
           </button>
-
         </div>
 
         <form onSubmit={handleSubmit}>
-
           {isRegister && (
             <>
               <label>First Name</label>
@@ -215,7 +209,6 @@ function Community() {
                 ? 'Create Account'
                 : 'Login to Community'}
           </button>
-
         </form>
 
         {message && (
@@ -227,9 +220,7 @@ function Community() {
         <p className="auth-footer">
           Making communication accessible for everyone.
         </p>
-
       </section>
-
     </main>
   )
 }

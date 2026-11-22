@@ -39,6 +39,12 @@ class User(AbstractUser):
         default="English"
     )
 
+    bio = models.TextField(
+        max_length=300,
+        blank=True,
+        default=""
+    )
+
     translation_count = models.PositiveIntegerField(
         default=0
     )

@@ -1,48 +1,62 @@
-/* Community Authentication Page */
+/* SIGNCONNECT AUTHENTICATION PAGE */
 
 .community-auth {
-  min-height: 75vh;
+  min-height: 85vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 65px 20px;
+  padding: 70px 20px;
   background:
-    radial-gradient(circle at top right, #e8efff, transparent 40%),
-    #f7f9fd;
+    radial-gradient(circle at 10% 15%, #e4edff 0, transparent 35%),
+    radial-gradient(circle at 90% 85%, #e9f2ff 0, transparent 35%),
+    #f8faff;
 }
 
 .auth-card {
   width: 100%;
-  max-width: 460px;
-  padding: 38px;
-  border: 1px solid #e5eaf3;
-  border-radius: 20px;
-  background: white;
-  box-shadow: 0 15px 50px rgba(39, 65, 115, 0.09);
+  max-width: 440px;
+  padding: 42px;
+  border: 1px solid #e8edf6;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(35, 65, 120, 0.10);
+  animation: authAppear 0.5s ease;
+}
+
+@keyframes authAppear {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .auth-heading {
-  margin-bottom: 28px;
+  margin-bottom: 30px;
   text-align: center;
 }
 
 .auth-icon {
-  width: 58px;
-  height: 58px;
+  width: 65px;
+  height: 65px;
   display: grid;
   place-items: center;
-  margin: 0 auto 15px;
-  border-radius: 17px;
-  background: #edf3ff;
-  font-size: 30px;
+  margin: 0 auto 18px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #e9f0ff, #dce8ff);
+  font-size: 32px;
 }
 
 .auth-heading h1 {
   margin: 0;
   color: #172b4d;
   font-family: 'Manrope', sans-serif;
-  font-size: 27px;
+  font-size: 29px;
   font-weight: 800;
+  letter-spacing: -1px;
 }
 
 .auth-heading h1 span {
@@ -50,38 +64,43 @@
 }
 
 .auth-heading p {
-  margin-top: 10px;
+  margin-top: 11px;
   color: #8290a5;
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .auth-tabs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 7px;
   margin-bottom: 25px;
   padding: 5px;
-  border-radius: 10px;
-  background: #f2f5fb;
+  border-radius: 12px;
+  background: #f1f4fa;
 }
 
 .auth-tab {
-  padding: 12px;
+  padding: 13px;
   border: none;
-  border-radius: 8px;
+  border-radius: 9px;
   background: transparent;
-  color: #718096;
+  color: #8490a4;
   font: inherit;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.auth-tab:hover {
+  color: #4776e6;
 }
 
 .auth-tab.selected {
   background: white;
   color: #4776e6;
-  box-shadow: 0 2px 8px #243b6510;
+  box-shadow: 0 3px 12px rgba(30, 60, 110, 0.08);
 }
 
 .auth-card form {
@@ -97,20 +116,23 @@
 }
 
 .auth-card input {
+  box-sizing: border-box;
   width: 100%;
-  padding: 13px 14px;
-  border: 1px solid #dfe5ef;
-  border-radius: 9px;
+  padding: 14px 15px;
+  border: 1px solid #e0e6f0;
+  border-radius: 10px;
   outline: none;
+  background: #fbfcff;
   color: #273a57;
   font: inherit;
   font-size: 13px;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .auth-card input:focus {
   border-color: #4776e6;
-  box-shadow: 0 0 0 3px #4776e61a;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(71, 118, 230, 0.10);
 }
 
 .auth-card input::placeholder {
@@ -119,22 +141,23 @@
 
 .auth-submit {
   width: 100%;
-  margin-top: 25px;
-  padding: 15px;
+  margin-top: 27px;
+  padding: 16px;
   border: none;
-  border-radius: 10px;
-  background: #4776e6;
+  border-radius: 11px;
+  background: linear-gradient(110deg, #4776e6, #3563d1);
   color: white;
   font: inherit;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 8px 20px rgba(71, 118, 230, 0.20);
+  transition: all 0.25s ease;
 }
 
 .auth-submit:hover {
-  background: #3563d1;
   transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(71, 118, 230, 0.28);
 }
 
 .auth-submit:disabled {
@@ -145,8 +168,8 @@
 
 .auth-message {
   margin-top: 20px;
-  padding: 12px;
-  border-radius: 9px;
+  padding: 13px;
+  border-radius: 10px;
   background: #edf3ff;
   color: #3563d1;
   font-size: 12px;
@@ -156,25 +179,27 @@
 }
 
 .auth-footer {
-  margin: 25px 0 0;
+  margin: 27px 0 0;
   color: #a0aabc;
   font-size: 11px;
   text-align: center;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
-/* Mobile responsiveness */
+/* MOBILE RESPONSIVENESS */
 
 @media (max-width: 480px) {
   .community-auth {
-    padding: 40px 15px;
+    min-height: 75vh;
+    padding: 35px 15px;
   }
 
   .auth-card {
-    padding: 25px 20px;
+    padding: 28px 21px;
+    border-radius: 19px;
   }
 
   .auth-heading h1 {
-    font-size: 24px;
+    font-size: 25px;
   }
 }
